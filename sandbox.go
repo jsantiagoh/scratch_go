@@ -16,7 +16,7 @@ func callB() int {
 	return 2
 }
 
-func main() {
+func question() int {
 	fmt.Println("The question")
 
 	c := make(chan int, 2)
@@ -38,4 +38,8 @@ func main() {
 	case <-time.After(time.Second * 2):
 		panic("no response after 2 seconds")
 	}
+}
+
+func main() {
+	fmt.Println(question())
 }
