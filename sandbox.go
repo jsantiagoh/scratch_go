@@ -2,44 +2,16 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
+	"html"
+	"log"
+	"net/http"
 )
 
-func callA() int {
-	time.Sleep(time.Millisecond * time.Duration(rand.Intn(2000)))
-	return 40
-}
-
-func callB() int {
-	time.Sleep(time.Millisecond * time.Duration(rand.Intn(3000)))
-	return 2
-}
-
-func question() int {
-	fmt.Println("The question")
-
-	c := make(chan int, 2)
-	result := make(chan int)
-
-	go func() {
-		c <- callA()
-	}()
-	go func() {
-		c <- callB()
-	}()
-	go func() {
-		result <- (<-c) + (<-c)
-	}()
-
-	select {
-	case total := <-result:
-		return total
-	case <-time.After(time.Second * 2):
-		panic("no response after 2 seconds")
-	}
-}
-
 func main() {
-	fmt.Println(question())
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+	})
+
+	log.Println("Listening on :3000")
+	log.Fatal(http.ListenAndServe(":3000", nil))
 }
